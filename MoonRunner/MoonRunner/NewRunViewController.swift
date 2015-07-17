@@ -22,6 +22,8 @@
 
 import UIKit
 import CoreData
+import CoreLocation
+import HealthKit
 
 let DetailSegueName = "RunDetails"
 
@@ -84,4 +86,8 @@ extension NewRunViewController: UIActionSheetDelegate {
       navigationController?.popToRootViewControllerAnimated(true)
     }
   }
+}
+
+extension NewRunViewController: CLLocationManagerDelegate {
+
 }
