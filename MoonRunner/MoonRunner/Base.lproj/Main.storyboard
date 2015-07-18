@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="rS3-R9-Ivy">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="rS3-R9-Ivy">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
@@ -156,6 +156,12 @@
                                     <action selector="startPressed:" destination="HWb-Gp-C7s" eventType="touchUpInside" id="yYF-LR-8dJ"/>
                                 </connections>
                             </button>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="VVR-YK-c6r">
+                                <rect key="frame" x="0.0" y="181" width="600" height="205"/>
+                                <connections>
+                                    <outlet property="delegate" destination="HWb-Gp-C7s" id="rsB-Py-FgX"/>
+                                </connections>
+                            </mapView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -164,8 +170,11 @@
                             <constraint firstItem="ZF7-2I-IAm" firstAttribute="leading" secondItem="VJ9-OY-8eI" secondAttribute="leading" id="7r2-8T-1eB"/>
                             <constraint firstItem="Ldw-Fa-Ji4" firstAttribute="top" secondItem="3Bn-kN-Hn4" secondAttribute="bottom" constant="20" id="89K-w7-6ea"/>
                             <constraint firstAttribute="trailingMargin" secondItem="VJ9-OY-8eI" secondAttribute="trailing" constant="40" id="9pq-GW-0ot"/>
+                            <constraint firstAttribute="trailing" secondItem="VVR-YK-c6r" secondAttribute="trailing" id="Eug-jX-DuV"/>
+                            <constraint firstItem="VVR-YK-c6r" firstAttribute="leading" secondItem="ojN-4C-6WV" secondAttribute="leading" id="Jwh-gM-u4e"/>
                             <constraint firstItem="Ldw-Fa-Ji4" firstAttribute="leading" secondItem="ojN-4C-6WV" secondAttribute="leadingMargin" id="Qfa-Rb-pdG"/>
                             <constraint firstItem="ljO-dL-wjw" firstAttribute="top" secondItem="Ldw-Fa-Ji4" secondAttribute="bottom" constant="7.5" id="RkT-uk-Lbq"/>
+                            <constraint firstItem="ZF7-2I-IAm" firstAttribute="top" secondItem="VVR-YK-c6r" secondAttribute="bottom" constant="20" id="VKs-ph-PH3"/>
                             <constraint firstItem="Ccj-g8-niV" firstAttribute="leading" secondItem="XE4-hw-Nvy" secondAttribute="trailing" id="Vcu-nA-BOc"/>
                             <constraint firstItem="XE4-hw-Nvy" firstAttribute="bottom" secondItem="Ccj-g8-niV" secondAttribute="bottom" id="aV3-Ng-23F"/>
                             <constraint firstItem="OvH-G5-d73" firstAttribute="top" secondItem="VJ9-OY-8eI" secondAttribute="bottom" constant="20" id="bLc-Xb-2PC"/>
@@ -174,6 +183,7 @@
                             <constraint firstItem="Ccj-g8-niV" firstAttribute="top" secondItem="3Bn-kN-Hn4" secondAttribute="bottom" id="gZI-Wy-Zxq"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Ccj-g8-niV" secondAttribute="trailing" id="iW1-XW-uWr"/>
                             <constraint firstItem="Ccj-g8-niV" firstAttribute="leading" secondItem="ojN-4C-6WV" secondAttribute="leadingMargin" id="pGF-hR-IX6"/>
+                            <constraint firstItem="VVR-YK-c6r" firstAttribute="top" secondItem="Ccj-g8-niV" secondAttribute="bottom" constant="20" id="pZz-hg-16g"/>
                             <constraint firstItem="XE4-hw-Nvy" firstAttribute="leading" secondItem="ljO-dL-wjw" secondAttribute="leading" id="shD-Dy-a77"/>
                             <constraint firstItem="VJ9-OY-8eI" firstAttribute="top" secondItem="ZF7-2I-IAm" secondAttribute="bottom" constant="20" id="xXp-aM-Y7Q"/>
                         </constraints>
@@ -186,6 +196,7 @@
                     <navigationItem key="navigationItem" title="New Run" id="Eef-8o-k36"/>
                     <connections>
                         <outlet property="distanceLabel" destination="Ldw-Fa-Ji4" id="Fua-9L-fuk"/>
+                        <outlet property="mapView" destination="VVR-YK-c6r" id="IZp-H6-Jeh"/>
                         <outlet property="paceLabel" destination="XE4-hw-Nvy" id="dh5-SI-gcP"/>
                         <outlet property="promptLabel" destination="Ccj-g8-niV" id="DsX-AD-8ie"/>
                         <outlet property="startButton" destination="ZF7-2I-IAm" id="HD1-uf-JAf"/>

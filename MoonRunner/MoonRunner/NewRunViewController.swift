@@ -24,6 +24,7 @@ import UIKit
 import CoreData
 import CoreLocation
 import HealthKit
+import MapKit
 
 let DetailSegueName = "RunDetails"
 
@@ -32,6 +33,29 @@ class NewRunViewController: UIViewController {
 
   var run: Run!
 
+    
+    var seconds = 0.0       // tracks the duration of the run, in seconds
+    var distance = 0.0      // holds the cumulative distance of the run, in meters
+    
+    @IBOutlet weak var mapView: MKMapView!
+    
+    // is the object you'll tell to start or stop reading the user's location.
+    lazy var locationManager: CLLocationManager = {
+        var _locationManager = CLLocationManager()
+        _locationManager.delegate = self
+        _locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        _locationManager.activityType = .Fitness        // intelligently helps the device to save some power throught a user's run, say if they stop to cross a road.
+        
+        // Movement threshold for new events
+        _locationManager.distanceFilter = 10.0
+        return _locationManager
+    }()
+    
+    // is ana array to hold all the Location objects that will roll in.
+    lazy var locations = [CLLocation]()
+    // will fire each second and update the UI accordingly
+    lazy var timer = NSTimer()
+    
   @IBOutlet weak var promptLabel: UILabel!
   @IBOutlet weak var timeLabel: UILabel!
   @IBOutlet weak var distanceLabel: UILabel!
@@ -49,8 +73,36 @@ class NewRunViewController: UIViewController {
     distanceLabel.hidden = true
     paceLabel.hidden = true
     stopButton.hidden = true
-  }
+    
+    mapView.hidden = true
+    
+    locationManager.requestAlwaysAuthorization()        // only for ios8
 
+  }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        timer.invalidate()
+    }
+    
+    // update each of the statistics labels accordingly.
+    func eachSecond(timer: NSTimer) {
+        seconds++
+        let secondsQuantity = HKQuantity(unit: HKUnit.secondUnit(), doubleValue: seconds)
+        timeLabel.text = "Time: " + secondsQuantity.description
+        let distanceQuantity = HKQuantity(unit: HKUnit.meterUnit(), doubleValue: distance)
+        distanceLabel.text = "Distance: " + distanceQuantity.description
+        
+        let paceUnit = HKUnit.secondUnit().unitDividedByUnit(HKUnit.meterUnit())
+        let paceQuantity = HKQuantity(unit: paceUnit, doubleValue: seconds/distance)
+        paceLabel.text = "Pace: " + paceQuantity.description
+    }
+
+    func startLocationUpdates() {
+        // Here, the location manager will be lazily instantiated
+        locationManager.startUpdatingLocation()
+    }
+    
   @IBAction func startPressed(sender: AnyObject) {
     startButton.hidden = true
     promptLabel.hidden = true
@@ -59,7 +111,48 @@ class NewRunViewController: UIViewController {
     distanceLabel.hidden = false
     paceLabel.hidden = false
     stopButton.hidden = false
+    
+    mapView.hidden = false
+    seconds = 0.0
+    distance = 0.0
+    locations.removeAll(keepCapacity: false)
+    timer = NSTimer.scheduledTimerWithTimeInterval(1
+        , target: self
+        , selector: "eachSecond:"
+        , userInfo: nil
+        , repeats: true)
+    startLocationUpdates()
   }
+    
+    func saveRun() {
+        // 1
+        
+        // create a new Run object, and give it the cumulative distance and duration values as wll as assign it a timestamp.
+        let saveRun = NSEntityDescription.insertNewObjectForEntityForName("Run", inManagedObjectContext: managedObjectContext!) as! Run
+        saveRun.distance = distance
+        saveRun.duration = seconds
+        saveRun.timestamp = NSDate()
+        
+        // 2
+        // Each of the CLLocation objects recorded during the run is trimmed down to a new Location object and saved. Then you link the locations to the Run.
+        var savedLocations = [Location]()
+        for location in locations {
+            let savedLocation = NSEntityDescription.insertNewObjectForEntityForName("Location", inManagedObjectContext: managedObjectContext!) as! Location
+            savedLocation.timestamp = location.timestamp
+            savedLocation.latitude = location.coordinate.latitude
+            savedLocation.longitude = location.coordinate.longitude
+            savedLocations.append(savedLocation)
+        }
+        saveRun.locations = NSOrderedSet(array: savedLocations)
+        run = saveRun
+        
+        // 3
+        var error: NSError?
+        let success = managedObjectContext!.save(&error)
+        if !success {
+            println("Could not save the run!")
+        }
+    }
 
   @IBAction func stopPressed(sender: AnyObject) {
     let actionSheet = UIActionSheet(title: "Run Stopped", delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Save", "Discard")
@@ -79,6 +172,7 @@ extension NewRunViewController: UIActionSheetDelegate {
   func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
     //save
     if buttonIndex == 1 {
+        saveRun()
       performSegueWithIdentifier(DetailSegueName, sender: nil)
     }
       //discard
@@ -89,5 +183,41 @@ extension NewRunViewController: UIActionSheetDelegate {
 }
 
 extension NewRunViewController: CLLocationManagerDelegate {
+    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
+        // Usually the locations array only contains one object, but if there are more, they are ordered by time with the most recent location last.
+        for location in locations as! [CLLocation] {
+            let howRecent = location.timestamp.timeIntervalSinceNow
+            if abs(howRecent) < 10 && location.horizontalAccuracy < 20 {
+                // update distance
+                if self.locations.count > 0 {
+                    distance += location.distanceFromLocation(self.locations.last)
+                    var coords = [CLLocationCoordinate2D]()
+                    coords.append(self.locations.last!.coordinate)
+                    coords.append(location.coordinate)
+                    
+                    let region = MKCoordinateRegionMakeWithDistance(location.coordinate, 500, 500)
+                    mapView.setRegion(region, animated: true)
+                    
+                    mapView.addOverlay(MKPolyline(coordinates: &coords, count: coords.count))
+                }
+                
+                // save location
+                self.locations.append(location)
+            }
+        
+        }
+    }
+}
 
+extension NewRunViewController: MKMapViewDelegate {
+    func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
+        if !overlay.isKindOfClass(MKPolyline) {
+            return nil
+        }
+        let polyline = overlay as! MKPolyline
+        let render = MKPolylineRenderer(polyline: polyline)
+        render.strokeColor = UIColor.blueColor()
+        render.lineWidth = 3
+        return render
+    }
 }

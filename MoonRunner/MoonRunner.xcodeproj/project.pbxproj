@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2CCAB0AE1B5AB71F0075973B /* MulticolorPolylineSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CCAB0AD1B5AB71F0075973B /* MulticolorPolylineSegment.swift */; };
 		78CE0D651AFBEA53009BBE75 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78CE0D641AFBEA53009BBE75 /* Location.swift */; };
 		78CE0D671AFBEA54009BBE75 /* Run.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78CE0D661AFBEA54009BBE75 /* Run.swift */; };
 		870F82631A24E70F00776E2F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 870F82621A24E70F00776E2F /* AppDelegate.swift */; };
@@ -34,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2CCAB0AD1B5AB71F0075973B /* MulticolorPolylineSegment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MulticolorPolylineSegment.swift; sourceTree = "<group>"; };
 		78CE0D641AFBEA53009BBE75 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		78CE0D661AFBEA54009BBE75 /* Run.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Run.swift; sourceTree = "<group>"; };
 		870F825D1A24E70F00776E2F /* MoonRunner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoonRunner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,6 +109,7 @@
 				78CE0D631AFBEA36009BBE75 /* Models */,
 				870F82621A24E70F00776E2F /* AppDelegate.swift */,
 				8772AB591A26347A00613309 /* HomeViewController.swift */,
+				2CCAB0AD1B5AB71F0075973B /* MulticolorPolylineSegment.swift */,
 				874B42141A9C344500081A45 /* NewRunViewController.swift */,
 				870F82691A24E70F00776E2F /* DetailViewController.swift */,
 				870F826B1A24E70F00776E2F /* Main.storyboard */,
@@ -264,6 +267,7 @@
 				874B42151A9C344500081A45 /* NewRunViewController.swift in Sources */,
 				870F82661A24E70F00776E2F /* MoonRunner.xcdatamodeld in Sources */,
 				870F82631A24E70F00776E2F /* AppDelegate.swift in Sources */,
+				2CCAB0AE1B5AB71F0075973B /* MulticolorPolylineSegment.swift in Sources */,
 				870F826A1A24E70F00776E2F /* DetailViewController.swift in Sources */,
 				78CE0D651AFBEA53009BBE75 /* Location.swift in Sources */,
 				78CE0D671AFBEA54009BBE75 /* Run.swift in Sources */,
